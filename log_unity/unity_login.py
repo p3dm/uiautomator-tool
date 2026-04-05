@@ -39,9 +39,10 @@ def get_bold_phone_rows(spreadsheet_id, sheet_name):
     Giả sử cấu trúc: A=Phone, B=Alias, C=?, D=Code (index 0,1,2,3)
     Bỏ 2 dòng header đầu
     """
-    res = sheets_service.spreadsheets().values().get(
+    res = sheets_service.spreadsheets().get(
         spreadsheetId=spreadsheet_id,
-        range=sheet_name
+        ranges=[sheet_name],
+        includeGridData=True
     ).execute()
 
     rows = res['sheets'][0]['data'][0]['rowData']

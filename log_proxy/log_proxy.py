@@ -2,6 +2,7 @@ import os
 import uiautomator2 as u2
 import time
 from multiprocessing import Process
+from log_unity.unity_login import get_bold_phone_rows
 
 XPATH = {
     'app': "com.vat.proxyconnector",
@@ -13,18 +14,16 @@ XPATH = {
     'connect': '//*[@text="CONNECT"]',
 }
 
-Device_ID = [
-]
-
-Proxy = [
-]
+data_list = get_bold_phone_rows("1KLUV3_u3XS0VtdrwcvzgpRBfoud-drdKDfyYB1Y2xjM", "Sheet1")
 
 def parse_data(data):
     ip, port, username, password = data.split(":")
     return ip, port, username, password
 
 
-def main(device_id, proxy):
+def main(data):
+    proxy = data['proxy']
+    device_id = data['Phone_ID']
     ip, port, username, password = parse_data(proxy)
     d = u2.connect(device_id)
     d.app_start(XPATH['app'])
@@ -68,8 +67,8 @@ def main(device_id, proxy):
 
 if __name__ == "__main__":
     processes = []
-    for device_id, proxy in zip(Device_ID, Proxy):
-        p = Process(target=main, args=(device_id, proxy))
+    for data in data_list:
+        p = Process(target=main, args=(data,))
         processes.append(p)
         p.start()
     for p in processes:
